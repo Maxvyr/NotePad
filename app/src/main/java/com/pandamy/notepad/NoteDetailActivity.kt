@@ -1,7 +1,11 @@
 package com.pandamy.notepad
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_note_detail.*
 
@@ -10,6 +14,7 @@ class NoteDetailActivity : AppCompatActivity() {
     companion object{
         val EXTRA_NOTE = "notes"
         val EXTRA_NOTE_INDEX = "indexNotes"
+        val REQUEST_EDIT_NOTE = 1
     }
 
     lateinit var note : Note
@@ -19,13 +24,40 @@ class NoteDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_detail)
 
-        val titleDetailActivity = findViewById<TextView>(R.id.titleDetail)
-        val noteDetailActivity = findViewById<TextView>(R.id.noteDetail)
+        //toolbar + button return
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         note = intent.getParcelableExtra<Note>(EXTRA_NOTE)!!
         indexNote = intent.getIntExtra(EXTRA_NOTE_INDEX, -1)
 
-        titleDetailActivity.text = note.title
-        noteDetailActivity.text = note.txt
+        titleDetail.setText(note.title)
+        noteDetail.setText(note.txt)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.activity_note_detail, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.action_save -> {
+                saveNote()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun saveNote() {
+        note.title = titleDetail.toString()
+        note.txt = noteDetail.toString()
+
+        intent = Intent()
+        intent.putExtra(EXTRA_NOTE, note)
+        intent.putExtra(EXTRA_NOTE_INDEX,indexNote)
+        setResult(Activity.RESULT_OK, intent)
+        finish()
     }
 }
