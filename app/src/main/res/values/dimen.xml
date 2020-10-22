@@ -4,5 +4,6 @@
     <dimen name="sp20">20sp</dimen>
 <!--    DP-->
     <dimen name="dp10">10dp</dimen>
+    <dimen name="dp16">16dp</dimen>
     <dimen name="dp70">70dp</dimen>
 </resources>

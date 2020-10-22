@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_note_list.*
+import kotlinx.android.synthetic.main.item_note.*
 
 class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -25,6 +26,9 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
         //toolbar
         setSupportActionBar(toolbar)
+
+        //FAB send click to the click of the view
+        createNoteFab.setOnClickListener(this)
 
         //init les var
         notes = mutableListOf<Note>()
@@ -49,11 +53,22 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(itemView: View) {
         Log.i(TAG, "onClick: Click")
-        showNote(itemView.tag as Int)
+        if (itemView.tag != null) {
+            showNote(itemView.tag as Int)
+        }
+        when(itemView.id){
+            R.id.createNoteFab -> createNewnote()
+        }
+    }
+
+    private fun createNewnote() {
+        //passe neg note to create a new note
+        showNote(-1)
     }
 
     private fun showNote(noteIndex : Int) {
-        val note = notes[noteIndex]
+        // if neg create a new note
+        val note = if(noteIndex < 0) Note() else notes[noteIndex]
         val intent = Intent(this, NoteDetailActivity::class.java)
         //passe en intent le int et la class parcelable
         intent.putExtra(NoteDetailActivity.EXTRA_NOTE,note)
@@ -78,8 +93,14 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveNote(note: Note?, indexNote: Int) {
-        //update les valeur de l'affichage de la note
-        notes[indexNote] = note!!
+        // if note neg on l'add au debut sinon
+        //update les valeur de l'affichage de la note existante
+        if (indexNote < 0) {
+            //on le met a l'index 0 pour qui se mette en haut de la liste
+            notes.add(0,note!!)
+        } else {
+            notes[indexNote] = note!!
+        }
         adapter.notifyDataSetChanged()
     }
 }
