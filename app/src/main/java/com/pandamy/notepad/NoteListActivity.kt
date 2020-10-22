@@ -87,9 +87,19 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun editNoteResult(data: Intent) {
-        val note = data.getParcelableExtra<Note>(NoteDetailActivity.EXTRA_NOTE)
         val indexNote = data.getIntExtra(NoteDetailActivity.EXTRA_NOTE_INDEX,-1)
-        saveNote(note, indexNote)
+
+        // with the diff ACTION (string) put in the intent of the NoteDetailActivity
+        // make diff thing
+        when (data.action){
+            NoteDetailActivity.ACTION_SENDING_NEW_NOTE_VALUE -> {
+                val note = data.getParcelableExtra<Note>(NoteDetailActivity.EXTRA_NOTE)
+                saveNote(note, indexNote)
+            }
+            NoteDetailActivity.ACTION_DELETE_NOTE -> {
+                deleteNote(indexNote)
+            }
+        }
     }
 
     private fun saveNote(note: Note?, indexNote: Int) {
@@ -101,6 +111,17 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         } else {
             notes[indexNote] = note!!
         }
+        adapter.notifyDataSetChanged()
+    }
+
+    private fun deleteNote(indexNote: Int) {
+        // note indew inf 0 nothing to do exit fun
+        // else remove the note from the list
+        // update the adapter
+        if (indexNote < 0) {
+            return
+        }
+        val note = notes.removeAt(indexNote)
         adapter.notifyDataSetChanged()
     }
 }

@@ -14,6 +14,9 @@ class NoteDetailActivity : AppCompatActivity() {
         val EXTRA_NOTE = "notes"
         val EXTRA_NOTE_INDEX = "indexNotes"
         val REQUEST_EDIT_NOTE = 1
+
+        val ACTION_SENDING_NEW_NOTE_VALUE = "com.pandamy.notepad.NoteDetailActivity.ACTION_SENDING_NEW_NOTE_VALUE"
+        val ACTION_DELETE_NOTE = "com.pandamy.notepad.NoteDetailActivity.ACTION_DELETE_NOTE"
     }
 
     lateinit var note : Note
@@ -45,19 +48,49 @@ class NoteDetailActivity : AppCompatActivity() {
                 sendingNewNoteValue()
                 true
             }
+            R.id.action_delete -> {
+                showDeleteNoteDialog()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
+    private fun showDeleteNoteDialog() {
+        //instancie le dialog
+        val dialogFragmentDeleteNote = ConfirmDeleteNoteDialogFragment(note.title)
+        //call interface to implement the callback to know the result
+        dialogFragmentDeleteNote.listener = object: ConfirmDeleteNoteDialogFragment.ConfirmDeleteNoteDialogListener{
+            override fun onDialogPositiveClick() {
+                deleteNote()
+            }
+
+            override fun onDialogNegativeClick() { }
+
+        }
+        dialogFragmentDeleteNote.show(supportFragmentManager, "deleteNote")
+    }
+
     private fun sendingNewNoteValue() {
         //recup le text entrée dans la note
+        // make the name of the action make to know what doing on the List Activity
         note.title = titleDetail.text.toString()
         note.txt = noteDetail.text.toString()
 
-        intent = Intent()
+        intent = Intent(ACTION_SENDING_NEW_NOTE_VALUE)
         intent.putExtra(EXTRA_NOTE, note)
         intent.putExtra(EXTRA_NOTE_INDEX,indexNote)
         setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
+    private fun deleteNote() {
+        // for deleting the note only index is usefull
+        // and after like send new value setResult to the ListActivity
+        // make the name of the action make to know what doing on the List Activity
+        intent = Intent(ACTION_DELETE_NOTE)
+        intent.putExtra(EXTRA_NOTE_INDEX, indexNote)
+        setResult(Activity.RESULT_OK,intent)
         finish()
     }
 }
