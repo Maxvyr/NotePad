@@ -69,7 +69,6 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         when (requestCode) {
             NoteDetailActivity.REQUEST_EDIT_NOTE -> editNoteResult(data) 
         }
-
     }
 
     private fun editNoteResult(data: Intent) {

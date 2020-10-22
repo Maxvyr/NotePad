@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_note_detail.*
 
 class NoteDetailActivity : AppCompatActivity() {
@@ -43,16 +42,17 @@ class NoteDetailActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.action_save -> {
-                saveNote()
+                sendingNewNoteValue()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun saveNote() {
-        note.title = titleDetail.toString()
-        note.txt = noteDetail.toString()
+    private fun sendingNewNoteValue() {
+        //recup le text entrée dans la note
+        note.title = titleDetail.text.toString()
+        note.txt = noteDetail.text.toString()
 
         intent = Intent()
         intent.putExtra(EXTRA_NOTE, note)
