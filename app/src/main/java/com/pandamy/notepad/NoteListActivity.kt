@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
 import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.pandamy.notepad.utils.deleteNoteStorage
 import com.pandamy.notepad.utils.loadNotesStorage
 import com.pandamy.notepad.utils.persistNoteStorage
@@ -33,20 +35,13 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         //FAB send click to the click of the view
         createNoteFab.setOnClickListener(this)
 
-        //init les var
+        //init les Notes
         notes = loadNotesStorage(this)
 
         // note temporaire de base
-        notes.add(Note("note1", "dfdjkfbjdbd"))
-        notes.add(Note("note2", "dfdjk"))
-        notes.add(Note("note", "fsjcohjcirgiorbhqhp"))
-        notes.add(Note("note65", "fsjgsrgsgcohjcirgiorbhqhp"))
-        notes.add(Note("note00", "rgs"))
-        notes.add(Note("note5", "fsjcohjcitjykfyuli'(-è-(-rgiorbhqhp"))
-        notes.add(Note("note3555", "&&²²²²"))
-        notes.add(Note("note23", ")ççàçg)àsçrg)rs"))
-        notes.add(Note("note110", "fsjcohjcirgiorbhqhp"))
-        notes.add(Note("note30", "fsjcohjcirgiorbhqhprdthdjyhretjsy"))
+        if(notes.isEmpty()) {
+            notes.add(Note("Idée", "Le savoir c'est le pouvoir"))
+        }
 
 
         adapter = NoteAdapter(notes,this)
@@ -120,7 +115,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun deleteNote(indexNote: Int) {
-        // note indew inf 0 nothing to do exit fun
+        // note index inf 0 nothing to do exit fun
         // else remove the note from the list
         // update the adapter
         if (indexNote < 0) {
@@ -130,5 +125,10 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         //delete note in appFolder
         deleteNoteStorage(this,note)
         adapter.notifyDataSetChanged()
+
+        // show snackbar to explain
+        // wich note is delete
+        Snackbar.make(coodinatorLayoutListNote, "${note.title} delete", Snackbar.LENGTH_LONG)
+            .show()
     }
 }
