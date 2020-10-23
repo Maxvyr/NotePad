@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_note_detail.*
@@ -78,7 +79,7 @@ class NoteDetailActivity : AppCompatActivity() {
         note.txt = noteDetail.text.toString()
 
         intent = Intent(ACTION_SENDING_NEW_NOTE_VALUE)
-        intent.putExtra(EXTRA_NOTE, note)
+        intent.putExtra(EXTRA_NOTE, note as Parcelable)
         intent.putExtra(EXTRA_NOTE_INDEX,indexNote)
         setResult(Activity.RESULT_OK, intent)
         finish()

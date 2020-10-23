@@ -4,11 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.pandamy.notepad.utils.deleteNoteStorage
+import com.pandamy.notepad.utils.loadNotesStorage
+import com.pandamy.notepad.utils.persistNoteStorage
 import kotlinx.android.synthetic.main.activity_note_list.*
-import kotlinx.android.synthetic.main.item_note.*
 
 class NoteListActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -31,9 +34,9 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         createNoteFab.setOnClickListener(this)
 
         //init les var
-        notes = mutableListOf<Note>()
+        notes = loadNotesStorage(this)
 
-        // note temporaire pour test
+        // note temporaire de base
         notes.add(Note("note1", "dfdjkfbjdbd"))
         notes.add(Note("note2", "dfdjk"))
         notes.add(Note("note", "fsjcohjcirgiorbhqhp"))
@@ -71,7 +74,7 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
         val note = if(noteIndex < 0) Note() else notes[noteIndex]
         val intent = Intent(this, NoteDetailActivity::class.java)
         //passe en intent le int et la class parcelable
-        intent.putExtra(NoteDetailActivity.EXTRA_NOTE,note)
+        intent.putExtra(NoteDetailActivity.EXTRA_NOTE,note as Parcelable)
         intent.putExtra(NoteDetailActivity.EXTRA_NOTE_INDEX, noteIndex)
         startActivityForResult(intent,NoteDetailActivity.REQUEST_EDIT_NOTE)
     }
@@ -103,13 +106,15 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveNote(note: Note?, indexNote: Int) {
+        //save note in appFolder
+        persistNoteStorage(this,note!!)
         // if note neg on l'add au debut sinon
         //update les valeur de l'affichage de la note existante
         if (indexNote < 0) {
             //on le met a l'index 0 pour qui se mette en haut de la liste
-            notes.add(0,note!!)
+            notes.add(0, note)
         } else {
-            notes[indexNote] = note!!
+            notes[indexNote] = note
         }
         adapter.notifyDataSetChanged()
     }
@@ -122,6 +127,8 @@ class NoteListActivity : AppCompatActivity(), View.OnClickListener {
             return
         }
         val note = notes.removeAt(indexNote)
+        //delete note in appFolder
+        deleteNoteStorage(this,note)
         adapter.notifyDataSetChanged()
     }
 }
