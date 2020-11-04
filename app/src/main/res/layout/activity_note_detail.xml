@@ -30,13 +30,17 @@
     <EditText
         android:id="@+id/noteDetail"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:lines="50"
+        android:minLines="1"
+        android:maxLines="50"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleDetail"
-        android:inputType="text" />
+        android:inputType="textMultiLine" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
